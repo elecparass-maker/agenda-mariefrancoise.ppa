@@ -1,15 +1,27 @@
 import { useEffect, useState } from 'react';
 
 export default function Weather() {
-  const [city, setCity] = useState(() => {
-    return localStorage.getItem('city') || 'Paris';
-  });
-  const [inputCity, setInputCity] = useState(city);
+  const [city, setCity] = useState('Paris'); // valeur par défaut
+  const [inputCity, setInputCity] = useState('Paris');
   const [weather, setWeather] = useState({ temp: 25, desc: 'Ensoleillé' });
 
   useEffect(() => {
-    localStorage.setItem('city', city);
-    // Simulation d'appel météo
+    // Ce code ne s'exécute que côté client (navigateur)
+    if (typeof window !== 'undefined') {
+      const savedCity = localStorage.getItem('city');
+      if (savedCity) {
+        setCity(savedCity);
+        setInputCity(savedCity);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('city', city);
+    }
+
+    // Ici tu pourrais faire un vrai appel à l'API météo
     setWeather({ temp: 25, desc: 'Partiellement nuageux' });
   }, [city]);
 
